@@ -19,7 +19,7 @@ const showImages = (images) => {
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
-  // toggleSpinner();
+  toggleSpinner();
   galleryHeader.style.display = 'flex';
   images.forEach(image => {
     let div = document.createElement('div');
@@ -31,7 +31,7 @@ const showImages = (images) => {
 }
 
 const getImages = (query) => {
-  // toggleSpinner();
+  toggleSpinner();
   fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
@@ -42,7 +42,7 @@ let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.toggle('added');
- 
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
@@ -72,7 +72,7 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
-  if(duration > 0) {
+  if (duration > 0) {
     sliders.forEach(slide => {
       let item = document.createElement('div')
       item.className = "slider-item";
@@ -87,7 +87,7 @@ const createSlider = () => {
       changeSlide(slideIndex);
     }, duration);
   }
-  else{
+  else {
     alert("Sorry something went wrong! Time can't be negative!!");
   }
 }
@@ -131,13 +131,17 @@ sliderBtn.addEventListener('click', function () {
 })
 
 //search box enter key
- document.getElementById("search").addEventListener("keypress", function() {
-   document.getElementById("search-btn").click();
+document.getElementById('search').addEventListener('keypress', function (event) {
+  if (event.key === 'Enter') {
+    document.getElementById('search-btn').click();
+  }
 })
 
 
-//toggle spinner
-// const toggleSpinner = () =>{
-//   const spinner = document.getElementById('toggle-spinner');
-//   spinner.classList.toggle('d-none');
-// }
+// toggle spinner bonus content
+const toggleSpinner = () => {
+  const spinner = document.getElementById('loading-spinner');
+  const imagesArea = document.querySelector('.images');
+  spinner.classList.toggle('d-none');
+  imagesArea.classList.toggle('d-none');
+}
