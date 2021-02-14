@@ -11,13 +11,15 @@ let sliders = [];
 // If this key doesn't work
 // Find the name in the url and go to their website
 // to create your own api key
-const KEY = '20264343-2392b8b0ad4e2368b18ad587f';
+// const KEY = '20264343-2392b8b0ad4e2368b18ad587f';
+const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
+  // toggleSpinner();
   galleryHeader.style.display = 'flex';
   images.forEach(image => {
     let div = document.createElement('div');
@@ -29,6 +31,7 @@ const showImages = (images) => {
 }
 
 const getImages = (query) => {
+  // toggleSpinner();
   fetch(`https://pixabay.com/api/?key=${KEY}&q=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
@@ -38,16 +41,17 @@ const getImages = (query) => {
 let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
-  element.classList.add('added');
+  element.classList.toggle('added');
  
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    // alert('Hey, Already added !')
+    sliders.pop(img);
   }
 }
-var timer
+var timer;
 const createSlider = () => {
   // check slider image length
   if (sliders.length < 2) {
@@ -68,19 +72,24 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
-  sliders.forEach(slide => {
-    let item = document.createElement('div')
-    item.className = "slider-item";
-    item.innerHTML = `<img class="w-100"
-    src="${slide}"
-    alt="">`;
-    sliderContainer.appendChild(item)
-  })
-  changeSlide(0)
-  timer = setInterval(function () {
-    slideIndex++;
-    changeSlide(slideIndex);
-  }, duration);
+  if(duration > 0) {
+    sliders.forEach(slide => {
+      let item = document.createElement('div')
+      item.className = "slider-item";
+      item.innerHTML = `<img class="w-100"
+      src="${slide}"
+      alt="">`;
+      sliderContainer.appendChild(item)
+    })
+    changeSlide(0)
+    timer = setInterval(function () {
+      slideIndex++;
+      changeSlide(slideIndex);
+    }, duration);
+  }
+  else{
+    alert("Sorry something went wrong! Time can't be negative!!");
+  }
 }
 
 // change slider index 
@@ -95,7 +104,7 @@ const changeSlide = (index) => {
   if (index < 0) {
     slideIndex = items.length - 1
     index = slideIndex;
-  };
+  }
 
   if (index >= items.length) {
     index = 0;
@@ -103,10 +112,10 @@ const changeSlide = (index) => {
   }
 
   items.forEach(item => {
-    item.style.display = "none"
+    item.style.display = "none";
   })
 
-  items[index].style.display = "block"
+  items[index].style.display = "block";
 }
 
 searchBtn.addEventListener('click', function () {
@@ -117,13 +126,18 @@ searchBtn.addEventListener('click', function () {
   sliders.length = 0;
 })
 
-//search box enter key
-//  document.getElementById("search").addEventListener("keypress", function(event) {
-//     if (event.key == 'Enter'){
-//       document.getElementById("search-btn");
-//     }
-// });
-
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+//search box enter key
+ document.getElementById("search").addEventListener("keypress", function() {
+   document.getElementById("search-btn").click();
+})
+
+
+//toggle spinner
+// const toggleSpinner = () =>{
+//   const spinner = document.getElementById('toggle-spinner');
+//   spinner.classList.toggle('d-none');
+// }
